@@ -113,7 +113,7 @@ img { display: block; }
 .nav a { text-decoration: none; color: var(--ink-2); font-size: .95rem; font-weight: 500; padding: .5em .85em; border-radius: 999px; transition: color .15s, background-color .15s; }
 .nav a:hover { color: var(--ink); background: color-mix(in srgb, var(--ink) 6%, transparent); }
 .site-header .btn { min-height: 42px; font-size: .95rem; padding: 0 1.2em; }
-@media (max-width: 960px) { .nav { display: none; } .site-header .btn { margin-left: auto; } }
+@media (max-width: 1120px) { .nav { display: none; } .site-header .btn { margin-left: auto; } }
 
 /* Hero: a liquid-silver surface, the instruments passing over it one at a time */
 .hero { position: relative; overflow: hidden; isolation: isolate; background: var(--sh-1); }
@@ -142,6 +142,14 @@ img { display: block; }
 .slides { position: relative; aspect-ratio: 3 / 2; }
 .slide { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; mix-blend-mode: multiply; opacity: 0; transform: rotate(var(--r, -6deg)) scale(var(--s, 1.18)); }
 .slide.is-current { opacity: 1; }
+/* A line of light crossing the instrument. It is masked to the instrument's own shape, built from the photo,
+   so the surface catches the light and the silver behind it doesn't. */
+.shine {
+  position: absolute; inset: 0; pointer-events: none; opacity: 0;
+  background: linear-gradient(104deg, transparent 42%, rgba(255, 255, 255, .16) 47%, rgba(255, 255, 255, .7) 50%, rgba(255, 255, 255, .16) 53%, transparent 58%);
+  background-size: 300% 100%; background-repeat: no-repeat;
+  -webkit-mask-size: 100% 100%; mask-size: 100% 100%; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+}
 
 /* Spec line under the instrument: hairline timer, then count, name and code, then controls */
 .slide-bar-wrap { display: grid; gap: 14px; margin: 8px 4% 0; }
@@ -275,7 +283,11 @@ img { display: block; }
 .line-tab:hover { border-color: var(--ink-3); color: var(--ink); }
 .line-tab[aria-selected="true"] { color: var(--ink); border-color: var(--ink); box-shadow: inset 0 -3px 0 var(--accent); }
 @media (max-width: 860px) { .line-tabs { grid-template-columns: 1fr 1fr; } }
-.item-photo.photo img { mix-blend-mode: normal; object-fit: cover; transform: none; filter: saturate(.5) contrast(1.04); }
+.item-photo.photo { background: #1C2028; }
+.item-photo.photo img { mix-blend-mode: normal; object-fit: cover; transform: none; }
+.line-photo.stage { background: #1C2028; aspect-ratio: 3 / 2; }
+.line-photo.stage img { filter: none; }
+.featured-photo.stage img { filter: none; }
 .item:hover .item-photo.photo img { transform: scale(1.04); }
 .catalog-note { margin-top: 24px; font-size: var(--t-small); color: var(--ink-3); }
 
@@ -283,7 +295,7 @@ img { display: block; }
 .featured { position: relative; color: var(--on-graphite); background: radial-gradient(60% 90% at 28% 45%, var(--graphite-hi) 0%, var(--graphite) 70%); overflow: hidden; }
 .featured .wrap { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: clamp(36px, 5vw, 88px); align-items: center; padding-block: clamp(80px, 9vw, 136px); }
 .featured-photo { border-radius: 20px; overflow: hidden; box-shadow: 0 0 0 1px rgba(255,255,255,.08), 0 50px 90px -40px rgba(0,0,0,.8); }
-.featured-photo img { width: 100%; filter: saturate(.25) contrast(1.1) brightness(.95); }
+.featured-photo img { width: 100%; height: auto; filter: saturate(.25) contrast(1.1) brightness(.95); }
 .featured-body { display: grid; gap: 22px; min-width: 0; }
 .featured .kicker { color: var(--on-graphite-2); }
 .featured h2 { font-size: var(--t-h2); background: var(--type-metal-dark); -webkit-background-clip: text; background-clip: text; color: transparent; }
@@ -442,7 +454,7 @@ button.item-photo, .slides-zoom { display: block; width: 100%; padding: 0; borde
 .lang-switch button { font: 600 .78rem/1 var(--font); color: var(--ink-2); background: transparent; border: 0; border-radius: 999px; padding: .62em .85em; cursor: pointer; letter-spacing: .01em; transition: background-color .15s, color .15s, box-shadow .15s; }
 .lang-switch button:hover { color: var(--ink); }
 .lang-switch button[aria-pressed="true"] { background: var(--raised); color: var(--ink); box-shadow: 0 1px 3px rgba(20, 25, 32, .16); }
-@media (max-width: 960px) { .lang-switch { margin-left: auto; } .site-header .btn { margin-left: 0; } }
+@media (max-width: 1120px) { .lang-switch { margin-left: auto; } .site-header .btn { margin-left: 0; } }
 :root[data-lang="ko"] [lang="en"]:not(.keep) { display: none !important; }
 :root[data-lang="en"] [lang="ko"]:not(.keep) { display: none !important; }
 :root[data-lang="en"] :is(.h-en, .h3-en, .en-p) { font-size: inherit; font-weight: inherit; color: inherit; letter-spacing: inherit; margin-top: 0; }
@@ -453,6 +465,40 @@ button.item-photo, .slides-zoom { display: block; width: 100%; padding: 0; borde
 :root[data-lang="en"] .hero h1 .hero-en { margin-top: 0; font-size: .86em; /* English runs longer than the Korean lines it replaces */ line-height: inherit; letter-spacing: -0.04em; }
 :root[data-lang="en"] .hero h1 .hero-en > span { display: block; background: var(--type-metal); -webkit-background-clip: text; background-clip: text; color: transparent; padding-bottom: .05em; }
 :root[data-lang="en"] .hero h1 .hero-en .en-b { font-weight: 300; }
+
+/* Resource library: the catalogs shown as bound volumes on a graphite shelf */
+.resources { color: var(--on-graphite); background: radial-gradient(70% 90% at 50% 0%, var(--graphite-hi) 0%, var(--graphite) 72%); padding-block: clamp(80px, 9vw, 128px); }
+.resources .kicker, .resources .kicker [lang="en"], .resources .section-head p, .resources .en-p, .resources .h-en, .resources .h3-en { color: var(--on-graphite-2); }
+.resources h2 { color: var(--on-graphite); }
+.resources .section-head { margin-inline: auto; text-align: center; justify-items: center; }
+.tomes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(24px, 3.4vw, 48px); perspective: 1400px; }
+.tome { display: grid; gap: 22px; align-content: start; }
+.tome-cover {
+  position: relative; display: block; aspect-ratio: 3 / 4; overflow: hidden; border-radius: 4px 12px 12px 4px; text-decoration: none; color: #fff; background: #1C2028;
+  box-shadow: inset 7px 0 10px -6px rgba(0, 0, 0, .75), 0 34px 50px -30px rgba(0, 0, 0, .95);
+  transform-origin: left center; transition: transform .55s cubic-bezier(.2,.7,.1,1), box-shadow .55s;
+}
+.tome-cover > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.tome-cover::before { content: ""; position: absolute; inset: 0; z-index: 1; box-shadow: inset 9px 0 12px -7px rgba(0, 0, 0, .8); background: linear-gradient(180deg, rgba(10, 12, 15, .55) 0%, transparent 30%, transparent 55%, rgba(10, 12, 15, .9) 100%); }
+.tome-cover::after { /* light catching the cover as it opens */
+  content: ""; position: absolute; inset: 0; z-index: 2; pointer-events: none;
+  background: linear-gradient(105deg, transparent 38%, rgba(255, 255, 255, .28) 50%, transparent 62%); transform: translateX(-120%); transition: transform 1s cubic-bezier(.2,.7,.1,1);
+}
+.tome-cover:hover, .tome-cover:focus-visible { transform: rotateY(-14deg) translateY(-6px); box-shadow: inset 7px 0 10px -6px rgba(0, 0, 0, .75), 24px 40px 56px -28px rgba(0, 0, 0, .95); }
+.tome-cover:hover::after { transform: translateX(120%); }
+.tome-logo { position: absolute; z-index: 2; top: 20px; left: 26px; }
+.tome-logo img { height: 26px; width: auto; }
+.tome-title { position: absolute; z-index: 2; left: 26px; right: 20px; bottom: 22px; font-size: 1.35rem; line-height: 1.2; letter-spacing: -0.02em; }
+.tome-title b { display: block; font-weight: 600; }
+.tome-title b[lang="en"] { margin-top: 4px; font-size: .78rem; font-weight: 400; letter-spacing: .02em; color: #C7CDD6; }
+:root[data-lang="en"] .tome-title b[lang="en"] { margin-top: 0; font-size: 1.35rem; font-weight: 600; letter-spacing: -0.02em; color: #fff; }
+.tome-body { display: grid; gap: 10px; justify-items: start; }
+.tome-body h3 { font-size: 1.1rem; font-weight: 600; }
+.tome-meta { font-size: var(--t-small); color: var(--on-graphite-2); font-variant-numeric: tabular-nums; }
+.tome-body .btn { margin-top: 6px; }
+.resources-note { margin-top: 40px; text-align: center; font-size: var(--t-small); }
+@media (prefers-reduced-motion: reduce) { .tome-cover, .tome-cover::after { transition: none; } .tome-cover:hover { transform: none; } }
+@media (max-width: 860px) { .tomes { grid-template-columns: 1fr; max-width: 360px; margin-inline: auto; } }
 
 footer { background: var(--graphite); color: var(--on-graphite-2); font-size: var(--t-small); }
 footer .wrap { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px; justify-content: space-between; padding-block: 40px; }
@@ -469,6 +515,7 @@ footer address { font-style: normal; display: grid; gap: 2px; text-align: right;
       <a href="#products"><span lang="ko">제품 라인</span><small lang="en">Products</small></a>
       <a href="#procedure"><span class="keep">eX TLIF</span><small lang="en">Fusion set</small></a>
       <a href="#catalog"><span lang="ko">기구 카탈로그</span><small lang="en">Catalog</small></a>
+      <a href="#resources"><span lang="ko">자료실</span><small lang="en">Resources</small></a>
       <a href="#about"><span lang="ko">회사 소개</span><small lang="en">About</small></a>
       <a href="#history"><span lang="ko">연혁</span><small lang="en">History</small></a>
       <a href="#contact"><span lang="ko">오시는 길</span><small lang="en">Contact</small></a>
@@ -554,7 +601,7 @@ footer address { font-style: normal; display: grid; gap: 2px; text-align: right;
 
       <div class="lines">
         <article class="line" id="line-dual-decomp">
-          <div class="line-photo plate on-white"><img class="zoomable" data-zoom="white" data-name="Dual Portal Scope / Sheath" data-code="Catalog p.2" src="img/catalog/dd-scope-sheath.jpg" alt="Dual Portal 스코프와 시스 세트" width="1600" height="1067"></div>
+          <div class="line-photo stage"><img class="zoomable" data-zoom="photo" data-name="Dual Portal Scope / Sheath" data-code="Catalog p.2" src="img/catalog/dd-scope-sheath.jpg" alt="Dual Portal 스코프와 시스 세트" width="1600" height="1067"></div>
           <div class="line-body">
             <div class="tags"><span class="tag">Dual Portal</span><span class="tag"><span lang="ko">감압술</span> <i lang="en">Decompression</i></span></div>
             <h3><span lang="ko">양방향 척추 내시경 감압술 기구</span><span class="h3-en" lang="en">Dual Portal Endoscopic Spine Decompression Surgery Instruments</span></h3>
@@ -570,7 +617,7 @@ footer address { font-style: normal; display: grid; gap: 2px; text-align: right;
           </div>
         </article>
         <article class="line" id="line-dual-fusion">
-          <div class="line-photo plate on-white"><img class="zoomable" data-zoom="white" data-name="eX Cage Guide &amp; Cage Dilator" data-code="eX Ca 20-01, eX Di 20-02" src="img/products/cage-guide-dilator.jpg" alt="eX Cage Guide와 eX Cage Dilator" width="2000" height="1333"></div>
+          <div class="line-photo stage"><img class="zoomable" data-zoom="photo" data-name="eX TLIF Cage Guide" data-code="Catalog p.2" src="img/catalog/uf-ex-tlif-cage-guide.jpg" alt="eX Cage Guide와 eX Cage Dilator" width="2000" height="1333"></div>
           <div class="line-body">
             <div class="tags"><span class="tag">Dual Portal (UBE)</span><span class="tag"><span lang="ko">유합술</span> <i lang="en">Fusion</i></span></div>
             <h3><span lang="ko">양방향 척추 내시경 유합술 기구</span><span class="h3-en" lang="en">Dual Portal Endoscopic Spine Fusion Surgery Instruments</span></h3>
@@ -586,7 +633,7 @@ footer address { font-style: normal; display: grid; gap: 2px; text-align: right;
           </div>
         </article>
         <article class="line" id="line-one-fusion">
-          <div class="line-photo plate on-white"><img class="zoomable" data-zoom="white" data-name="Harrison Glider &amp; Dilator" data-code="Catalog p.4" src="img/catalog/of-harrison-set.jpg" alt="One Portal용 Harrison Glider와 Dilator 세트" width="1600" height="1067"></div>
+          <div class="line-photo stage"><img class="zoomable" data-zoom="photo" data-name="Harrison Glider &amp; Dilator" data-code="Catalog p.4" src="img/catalog/of-harrison-set.jpg" alt="One Portal용 Harrison Glider와 Dilator 세트" width="1600" height="1067"></div>
           <div class="line-body">
             <div class="tags"><span class="tag">One Portal</span><span class="tag"><span lang="ko">유합술</span> <i lang="en">Fusion</i></span></div>
             <h3><span lang="ko">단방향 척추 내시경 유합술 기구</span><span class="h3-en" lang="en">One Portal Fusion Instruments</span></h3>
@@ -680,7 +727,7 @@ footer address { font-style: normal; display: grid; gap: 2px; text-align: right;
 
   <section class="featured" aria-labelledby="featured-title">
     <div class="wrap">
-      <div class="featured-photo"><img class="zoomable" data-zoom="photo" data-name="Harrison Glider &amp; Dilator" src="img/harrison.jpg" alt="크기별로 정렬된 Harrison Glider와 Dilator 세트" width="817" height="723"></div>
+      <div class="featured-photo stage"><img class="zoomable" data-zoom="photo" data-name="Harrison Glider &amp; Dilator" src="img/catalog/of-harrison-set.jpg" alt="크기별로 정렬된 Harrison Glider와 Dilator 세트" width="1500" height="1000"></div>
       <div class="featured-body">
         <span class="kicker"><span lang="ko">대표 제품</span> <span lang="en">Featured product</span></span>
         <h2 id="featured-title">Harrison Glider &amp; Dilator</h2>
@@ -756,6 +803,55 @@ footer address { font-style: normal; display: grid; gap: 2px; text-align: right;
           <div class="logo-slot">Logo</div><div class="logo-slot">Logo</div><div class="logo-slot">Logo</div>
         </div>
       </div>
+    </div>
+  </section>
+
+  <section class="resources" id="resources" aria-labelledby="resources-title">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="kicker"><span lang="ko">자료실</span> <span lang="en">Resource library</span></span>
+        <h2 id="resources-title"><span lang="ko"><span class="nw">수술실에 들어가기 전에</span> <span class="nw">기구를 먼저 살펴보세요</span></span><span class="h-en" lang="en">Study the instruments before they reach the OR</span></h2>
+        <p><span lang="ko">필요한 카탈로그를 요청해 주세요. <span class="nw">담당자가 확인한 뒤</span> PDF를 보내 드립니다.</span><span class="en-p" lang="en">Request the catalog you need. Our team will review it and send you the PDF.</span></p>
+      </div>
+      <div class="tomes">
+        <article class="tome">
+          <a class="tome-cover" href="#contact" data-product="dual-decomp" aria-label="Dual Portal Decompression: request the catalog">
+            <img src="img/catalog/dd-pituitary-micro.jpg" alt="" width="1500" height="1000" loading="lazy">
+            <span class="tome-logo"><img src="img/logo-light.png" alt="" width="480" height="113"></span>
+            <span class="tome-title"><b lang="ko">Dual Portal 감압술</b><b lang="en">Dual Portal Decompression</b></span>
+          </a>
+          <div class="tome-body">
+            <h3><span lang="ko">양방향 척추 내시경 감압술 기구</span><span class="h3-en" lang="en">Dual Portal Decompression Instruments</span></h3>
+            <p class="tome-meta">PDF, 28 pages</p>
+            <a class="btn btn-primary" href="#contact" data-product="dual-decomp"><span lang="ko">카탈로그 요청</span><small lang="en">Request this catalog</small></a>
+          </div>
+        </article>
+        <article class="tome">
+          <a class="tome-cover" href="#contact" data-product="dual-fusion" aria-label="Dual Portal Fusion (UBE): request the catalog">
+            <img src="img/catalog/uf-bone-cutter.jpg" alt="" width="1500" height="1000" loading="lazy">
+            <span class="tome-logo"><img src="img/logo-light.png" alt="" width="480" height="113"></span>
+            <span class="tome-title"><b lang="ko">Dual Portal 유합술</b><b lang="en">Dual Portal Fusion (UBE)</b></span>
+          </a>
+          <div class="tome-body">
+            <h3><span lang="ko">양방향 척추 내시경 유합술 기구</span><span class="h3-en" lang="en">Dual Portal Fusion Instruments</span></h3>
+            <p class="tome-meta">PDF, 18 pages</p>
+            <a class="btn btn-primary" href="#contact" data-product="dual-fusion"><span lang="ko">카탈로그 요청</span><small lang="en">Request this catalog</small></a>
+          </div>
+        </article>
+        <article class="tome">
+          <a class="tome-cover" href="#contact" data-product="one-fusion" aria-label="One Portal Fusion: request the catalog">
+            <img src="img/catalog/of-harrison-double.jpg" alt="" width="1500" height="1000" loading="lazy">
+            <span class="tome-logo"><img src="img/logo-light.png" alt="" width="480" height="113"></span>
+            <span class="tome-title"><b lang="ko">One Portal 유합술</b><b lang="en">One Portal Fusion</b></span>
+          </a>
+          <div class="tome-body">
+            <h3><span lang="ko">단방향 척추 내시경 유합술 기구</span><span class="h3-en" lang="en">One Portal Fusion Instruments</span></h3>
+            <p class="tome-meta">PDF, 18 pages</p>
+            <a class="btn btn-primary" href="#contact" data-product="one-fusion"><span lang="ko">카탈로그 요청</span><small lang="en">Request this catalog</small></a>
+          </div>
+        </article>
+      </div>
+      <p class="resources-note"><span class="todo">인증서, 사용 설명서 등 공개할 자료가 있으면 이 줄에 추가합니다</span></p>
     </div>
   </section>
 
@@ -1015,6 +1111,9 @@ footer address { font-style: normal; display: grid; gap: 2px; text-align: right;
       host.appendChild(im);
     });
     const slides = [...host.children];
+    const shine = document.createElement('div');
+    shine.className = 'shine'; shine.setAttribute('aria-hidden', 'true');
+    host.appendChild(shine);
     const pad = n => String(n).padStart(2, '0');
     let i = 0, busy = false, userPaused = false, holding = false, onScreen = true;
 
@@ -1033,6 +1132,47 @@ footer address { font-style: normal; display: grid; gap: 2px; text-align: right;
       gsap.set(s, { rotation: r, scale: sc, transformOrigin: '55% 50%', opacity: k === 0 ? 1 : 0 });
     });
 
+    // Mask for the light: the instrument's silhouette, read from the photo's own pixels (its ground is white)
+    const masks = new Map();
+    function maskFor(img) {
+      if (masks.has(img)) return masks.get(img);
+      let url = null;
+      try {
+        const c = document.createElement('canvas'); c.width = 750; c.height = 500;
+        const g = c.getContext('2d', { willReadFrequently: true });
+        g.drawImage(img, 0, 0, 750, 500);
+        const d = g.getImageData(0, 0, 750, 500), p = d.data;
+        for (let k = 0; k < p.length; k += 4) {
+          const low = Math.min(p[k], p[k + 1], p[k + 2]);
+          p[k] = p[k + 1] = p[k + 2] = 255;
+          p[k + 3] = Math.max(0, Math.min(255, (232 - low) * 5));
+        }
+        g.putImageData(d, 0, 0);
+        url = c.toDataURL('image/png');
+      } catch (e) { /* no mask, no light; the slide still shows */ }
+      masks.set(img, url);
+      return url;
+    }
+    let sweep = null;
+    function passLight(img) {
+      if (sweep) sweep.kill();
+      gsap.set(shine, { opacity: 0 });
+      const run = () => {
+        const url = maskFor(img);
+        if (!url || img !== slides[i]) return;
+        shine.style.webkitMaskImage = shine.style.maskImage = `url(${url})`;
+        // Follows the slide's own tilt, scale and scroll drift
+        const follow = () => gsap.set(shine, { rotation: gsap.getProperty(img, 'rotation'), scale: gsap.getProperty(img, 'scale'), y: gsap.getProperty(img, 'y'), transformOrigin: '55% 50%' });
+        follow();
+        // The light changes, nothing moves, so this runs with reduced motion too
+        sweep = gsap.timeline({ onUpdate: follow })
+          .set(shine, { opacity: 1, backgroundPosition: '120% 0%' })
+          .to(shine, { backgroundPosition: '-20% 0%', duration: 1.9, ease: 'power1.inOut' })
+          .set(shine, { opacity: 0 });
+      };
+      img.complete && img.naturalWidth ? run() : img.addEventListener('load', run, { once: true });
+    }
+
     const timer = gsap.fromTo(bar, { scaleX: 0 }, { scaleX: 1, duration: DELAY, ease: 'none', paused: true, onComplete: () => step(1) });
     function sync() {
       const stop = userPaused || holding || !onScreen;
@@ -1046,7 +1186,7 @@ footer address { font-style: normal; display: grid; gap: 2px; text-align: right;
       from.classList.remove('is-current'); to.classList.add('is-current');
       i = next; setLabel(i); host.dataset.index = i;
       busy = true;
-      const done = () => { busy = false; };
+      const done = () => { busy = false; passLight(to); };
       if (reduceMotion) {
         gsap.timeline({ onComplete: done }).to(from, { opacity: 0, duration: .6 }, 0).to(to, { opacity: 1, duration: .6 }, 0);
       } else {
@@ -1068,7 +1208,7 @@ footer address { font-style: normal; display: grid; gap: 2px; text-align: right;
     fig.addEventListener('focusout', () => { holding = false; sync(); });
     new IntersectionObserver(([e]) => { onScreen = e.isIntersecting; sync(); }).observe(fig);
     // Let the opening moment finish before the first change
-    gsap.delayedCall(reduceMotion ? 0 : 1.6, () => { timer.restart(); sync(); });
+    gsap.delayedCall(reduceMotion ? 0 : 1.6, () => { timer.restart(); sync(); passLight(slides[0]); });
   })();
 
   /* ---------- One opening moment: the surface polishes in, the headline and instrument settle ---------- */
@@ -1197,9 +1337,9 @@ footer address { font-style: normal; display: grid; gap: 2px; text-align: right;
   });
 
   /* ---------- Catalog: four tabs, one per instrument set ----------
-     Names and page numbers follow the company's PDF catalogs. photo: true means the drape background could not be
-     removed cleanly, so the original photo is shown as a photo instead of blending into the steel plate. */
-  const C = (name, img, page, extra = {}) => ({ name, img, dir: 'catalog', code: `Catalog p.${page}`, codeKo: `카탈로그 ${page}쪽`, zoom: 1, ...extra });
+     Names and page numbers follow the company's PDF catalogs. Photos are the catalog originals with the blue drape
+     regraded to a dark steel surface (photo: true), so instruments keep their real shadows and reflections. */
+  const C = (name, img, page, extra = {}) => ({ name, img, dir: 'catalog', code: `Catalog p.${page}`, codeKo: `카탈로그 ${page}쪽`, zoom: 1, photo: true, ...extra });
   const LINES = {
     dd: { ko: 'Dual Portal 감압술', en: 'Dual Portal decompression', items: [
       C('Dual Portal Scope / Sheath', 'dd-scope-sheath', 2), C('Rotatory Kerrison Punch', 'dd-rotatory-kerrison', 3),
@@ -1207,32 +1347,32 @@ footer address { font-style: normal; display: grid; gap: 2px; text-align: right;
       C('Pituitary Forceps / Box Cutter', 'dd-pituitary-box', 6), C('Curette / Spade Knife', 'dd-curette-spade', 7),
       C('Muscle Detacher / Hook', 'dd-muscle-detacher', 8), C('Root Retractor / Hemostatic Agent Delivery Tube', 'dd-root-retractor', 9),
       C('Serial Dilator', 'dd-serial-dilator', 10), C('Double Ended Dissectors / Fan Dissector', 'dd-dissectors', 11),
-      C('Working Cannula', 'dd-working-cannula', 12, { photo: true }), C('Scope & Working Cannula', 'dd-scope-cannula', 14),
+      C('Working Cannula', 'dd-working-cannula', 12), C('Scope & Working Cannula', 'dd-scope-cannula', 14),
       C('Scope Cannula Self-retractor', 'dd-self-retractor', 15), C('Osteotome (Chisel I)', 'dd-osteotome-chisel', 16),
       C('Osteotome (P-Chisel)', 'dd-osteotome-pchisel', 17), C('C-chisel', 'dd-c-chisel', 18),
-      C('Bone Chip Cannula and Mallet', 'dd-mallet', 19, { photo: true }), C('Bone Wax', 'dd-bone-wax', 20),
-      C('Blade Holder', 'dd-blade-holder', 21), C('Dura Suture Pusher', 'dd-dura-suture', 22, { photo: true }),
-      C('Endo Arm', 'dd-endo-arm', 23), C('Drape', 'dd-drape', 24, { photo: true }), C('Dual Portal Tray', 'dd-tray', 25, { photo: true }),
+      C('Bone Chip Cannula and Mallet', 'dd-mallet', 19), C('Bone Wax', 'dd-bone-wax', 20),
+      C('Blade Holder', 'dd-blade-holder', 21), C('Dura Suture Pusher', 'dd-dura-suture', 22),
+      C('Endo Arm', 'dd-endo-arm', 23), C('Drape', 'dd-drape', 24), C('Dual Portal Tray', 'dd-tray', 25),
     ] },
     uf: { ko: 'Dual Portal 유합술 (UBE)', en: 'Dual Portal fusion (UBE)', items: [
-      C('eX TLIF Cage Guide', 'uf-ex-tlif-cage-guide', 2, { photo: true }), C('Cage Guide', 'uf-cage-guide', 3),
+      C('eX TLIF Cage Guide', 'uf-ex-tlif-cage-guide', 2), C('Cage Guide', 'uf-cage-guide', 3),
       C('Harrison Glider & Dilator', 'uf-harrison', 4), C('Curette (Square)', 'uf-curette-square', 6),
       C('Curette (Ring)', 'uf-curette-ring', 7), C('Osteotome (Chisel I)', 'uf-osteotome-chisel', 8),
-      C('Osteotome (P-Chisel II)', 'uf-osteotome-pchisel', 9), C('Bone Chip Cannula and Mallet', 'uf-mallet', 10, { photo: true }),
-      C('Cage Impactor', 'uf-cage-impactor', 11, { photo: true }), C('Dura Suture Pusher', 'uf-dura-suture', 12, { photo: true }),
-      C('Prep Elevator', 'uf-prep-elevator', 13), C('Prep Dissector', 'uf-prep-dissector', 14, { photo: true }),
+      C('Osteotome (P-Chisel II)', 'uf-osteotome-pchisel', 9), C('Bone Chip Cannula and Mallet', 'uf-mallet', 10),
+      C('Cage Impactor', 'uf-cage-impactor', 11), C('Dura Suture Pusher', 'uf-dura-suture', 12),
+      C('Prep Elevator', 'uf-prep-elevator', 13), C('Prep Dissector', 'uf-prep-dissector', 14),
       C('Prep Reamer', 'uf-prep-reamer', 15), C('Bone Cutter / Disc Remover', 'uf-bone-cutter', 16),
     ] },
     ex: { ko: 'eX TLIF 세트', en: 'eX TLIF set', items: ITEMS },
     of: { ko: 'One Portal 유합술', en: 'One Portal fusion', items: [
-      { ...C('Uniportal Fusion Set', 'uniportal-tray', 2, { photo: true }), dir: '' },
+      C('Uniportal Fusion Set', 'of-set', 2),
       C('Harrison Glider & Dilator Double', 'of-harrison-double', 3), C('Harrison Glider & Dilator', 'of-harrison-set', 4),
       C('Harrison Glider & Dilator', 'of-harrison-cages', 5), C('Harrison Glider & Dilator Single', 'of-harrison-single', 7),
       C('Endo Curette and Cob', 'of-curette-cob', 9), C('Endo Dissector and Hook', 'of-dissector-hook', 10),
       C('Endo Prep. Dissector', 'of-prep-dissector', 11), C('Bone Wax and Hemostatic Agent Delivery Tube', 'of-bone-wax-tube', 12),
       C('Endo Cutting Forcep', 'of-cutting-forcep', 13), C('Prep Reamer', 'of-prep-reamer', 14),
-      C('Endo Chisel and Inner Sleeve', 'of-chisel-sleeve', 15), C('Endo Rotatory K-Punch', 'of-rotatory-kpunch', 16, { photo: true }),
-      C('Hemostat Agent Dispenser and Dura Suture Pusher', 'of-dispenser-pusher', 17, { photo: true }),
+      C('Endo Chisel and Inner Sleeve', 'of-chisel-sleeve', 15), C('Endo Rotatory K-Punch', 'of-rotatory-kpunch', 16),
+      C('Hemostat Agent Dispenser and Dura Suture Pusher', 'of-dispenser-pusher', 17),
     ] },
   };
 
