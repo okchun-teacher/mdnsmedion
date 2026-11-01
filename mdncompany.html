@@ -202,6 +202,7 @@ img { display: block; }
 .instruments { list-style: none; margin: 6px 0 0; padding: 0; border-top: 1px solid var(--line); }
 .instruments li { display: flex; justify-content: space-between; gap: 16px; padding: 11px 0; border-bottom: 1px solid var(--line); }
 .instruments li span:last-child { color: var(--ink-3); font-size: var(--t-small); }
+.line-links { display: flex; flex-wrap: wrap; gap: 10px 24px; }
 .text-link { font-weight: 600; color: var(--accent-text); text-decoration: none; justify-self: start; border-bottom: 1.5px solid currentColor; padding-bottom: 2px; }
 @media (max-width: 800px) { .line { grid-template-columns: 1fr; } .line:nth-child(even) .line-photo { order: 0; } }
 
@@ -262,6 +263,20 @@ img { display: block; }
 .item-code { font-size: var(--t-small); color: var(--ink-2); font-variant-numeric: tabular-nums; }
 .item-group { font-size: .8rem; color: var(--ink-3); margin-top: 4px; }
 .check { justify-self: start; margin-top: 6px; font-size: .78rem; font-weight: 600; padding: .2em .6em; border-radius: 4px; background: var(--todo-bg); color: var(--todo-ink); }
+.steps[hidden] { display: none; }
+.line-tabs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin-bottom: 18px; }
+.line-tab {
+  display: grid; justify-items: start; gap: 2px; text-align: left; padding: 14px 16px; border-radius: 14px; cursor: pointer;
+  font: 600 .98rem/1.3 var(--font); color: var(--ink-2); background: var(--raised); border: 1px solid var(--line);
+  position: relative; transition: border-color .15s, color .15s, box-shadow .15s;
+}
+.line-tab em { font-style: normal; font-weight: 400; font-size: .8rem; color: var(--ink-3); }
+.line-tab .count { position: absolute; top: 14px; right: 16px; font-size: .8rem; font-weight: 500; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+.line-tab:hover { border-color: var(--ink-3); color: var(--ink); }
+.line-tab[aria-selected="true"] { color: var(--ink); border-color: var(--ink); box-shadow: inset 0 -3px 0 var(--accent); }
+@media (max-width: 860px) { .line-tabs { grid-template-columns: 1fr 1fr; } }
+.item-photo.photo img { mix-blend-mode: normal; object-fit: cover; transform: none; filter: saturate(.5) contrast(1.04); }
+.item:hover .item-photo.photo img { transform: scale(1.04); }
 .catalog-note { margin-top: 24px; font-size: var(--t-small); color: var(--ink-3); }
 
 /* Featured: graphite band under a spotlight */
@@ -394,7 +409,7 @@ button.item-photo, .slides-zoom { display: block; width: 100%; padding: 0; borde
 /* Bilingual: Korean first, English right under it in a quieter voice. Korean headings are set in phrase
    chunks (.nw) so a line never breaks inside a phrase such as "세 가지". */
 .nw { white-space: nowrap; }
-.h-en { font-size: clamp(1.05rem, .92rem + .45vw, 1.3rem); color: var(--ink-3); font-weight: 400; letter-spacing: -0.01em; line-height: 1.4; margin-top: -6px; }
+.h-en { display: block; margin-top: .55em; font-size: clamp(1.05rem, .92rem + .45vw, 1.3rem); color: var(--ink-3); font-weight: 400; letter-spacing: -0.01em; line-height: 1.4; }
 .en-p { display: block; color: var(--ink-3); font-size: .94em; margin-top: .35em; }
 .kicker [lang="en"] { font-weight: 400; margin-left: .5em; }
 .nav a { display: grid; justify-items: center; gap: 1px; line-height: 1.25; padding: .4em .85em; border-radius: 14px; }
@@ -402,8 +417,7 @@ button.item-photo, .slides-zoom { display: block; width: 100%; padding: 0; borde
 .btn { flex-direction: column; gap: 3px; min-height: 56px; line-height: 1.1; }
 .btn small { font-size: .72rem; font-weight: 500; opacity: .85; letter-spacing: .01em; }
 .site-header .btn { min-height: 46px; }
-.hero-title { display: grid; gap: 14px; }
-.hero-en { font-size: clamp(1.15rem, .9rem + .8vw, 1.55rem); color: var(--ink-2); font-weight: 400; letter-spacing: -0.015em; line-height: 1.35; }
+.hero h1 .hero-en { margin-top: 18px; font-size: clamp(1.15rem, .9rem + .8vw, 1.55rem); color: var(--ink-2); font-weight: 400; letter-spacing: -0.015em; line-height: 1.35; }
 .hero-meta [lang="en"] { color: var(--ink-3); font-weight: 400; }
 .matrix thead small, .matrix em, .matrix .none em { display: block; font-style: normal; font-weight: 400; font-size: .82rem; color: var(--ink-3); }
 .tag i { font-style: normal; color: var(--ink-3); margin-left: .3em; }
@@ -421,6 +435,25 @@ button.item-photo, .slides-zoom { display: block; width: 100%; padding: 0; borde
 .item-en { font-size: .82rem; color: var(--ink-3); }
 .contact-info .section-head { margin-bottom: 0; }
 
+/* Language switch: KO+EN (default), 한국어, EN. The choice sits on <html data-lang>; every text carries
+   lang="ko" or lang="en", and .keep stays in all modes. In English-only mode the English lines take over
+   the size and weight the Korean lines had. */
+.lang-switch { display: flex; padding: 3px; border-radius: 999px; background: color-mix(in srgb, var(--ink) 5%, transparent); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ink) 10%, transparent); }
+.lang-switch button { font: 600 .78rem/1 var(--font); color: var(--ink-2); background: transparent; border: 0; border-radius: 999px; padding: .62em .85em; cursor: pointer; letter-spacing: .01em; transition: background-color .15s, color .15s, box-shadow .15s; }
+.lang-switch button:hover { color: var(--ink); }
+.lang-switch button[aria-pressed="true"] { background: var(--raised); color: var(--ink); box-shadow: 0 1px 3px rgba(20, 25, 32, .16); }
+@media (max-width: 960px) { .lang-switch { margin-left: auto; } .site-header .btn { margin-left: 0; } }
+:root[data-lang="ko"] [lang="en"]:not(.keep) { display: none !important; }
+:root[data-lang="en"] [lang="ko"]:not(.keep) { display: none !important; }
+:root[data-lang="en"] :is(.h-en, .h3-en, .en-p) { font-size: inherit; font-weight: inherit; color: inherit; letter-spacing: inherit; margin-top: 0; }
+:root[data-lang="en"] :is(small, em, i)[lang="en"] { font-size: inherit; font-weight: inherit; color: inherit; opacity: 1; margin-left: 0; }
+:root[data-lang="en"] :is(.kicker, .text-link, .leader .role) [lang="en"] { margin-left: 0; font-weight: inherit; color: inherit; }
+:root[data-lang="en"] .hero-meta [lang="en"] { color: var(--ink); font-weight: 600; }
+:root[data-lang="en"] .item-en { font-size: 1.02rem; font-weight: 600; color: var(--ink); }
+:root[data-lang="en"] .hero h1 .hero-en { margin-top: 0; font-size: .86em; /* English runs longer than the Korean lines it replaces */ line-height: inherit; letter-spacing: -0.04em; }
+:root[data-lang="en"] .hero h1 .hero-en > span { display: block; background: var(--type-metal); -webkit-background-clip: text; background-clip: text; color: transparent; padding-bottom: .05em; }
+:root[data-lang="en"] .hero h1 .hero-en .en-b { font-weight: 300; }
+
 footer { background: var(--graphite); color: var(--on-graphite-2); font-size: var(--t-small); }
 footer .wrap { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px; justify-content: space-between; padding-block: 40px; }
 .footer-logo { height: 30px; width: auto; }
@@ -433,14 +466,19 @@ footer address { font-style: normal; display: grid; gap: 2px; text-align: right;
   <div class="wrap">
     <a class="logo" href="#top" aria-label="엠디앤컴퍼니 처음으로 / MD&amp;Company home"><img src="img/logo.png" alt="MD&amp;company 엠디앤컴퍼니" width="480" height="113"></a>
     <nav class="nav" aria-label="주요 메뉴 / Main menu">
-      <a href="#products"><span>제품 라인</span><small lang="en">Products</small></a>
-      <a href="#procedure"><span>eX TLIF</span><small lang="en">Fusion set</small></a>
-      <a href="#catalog"><span>기구 카탈로그</span><small lang="en">Catalog</small></a>
-      <a href="#about"><span>회사 소개</span><small lang="en">About</small></a>
-      <a href="#history"><span>연혁</span><small lang="en">History</small></a>
-      <a href="#contact"><span>오시는 길</span><small lang="en">Contact</small></a>
+      <a href="#products"><span lang="ko">제품 라인</span><small lang="en">Products</small></a>
+      <a href="#procedure"><span class="keep">eX TLIF</span><small lang="en">Fusion set</small></a>
+      <a href="#catalog"><span lang="ko">기구 카탈로그</span><small lang="en">Catalog</small></a>
+      <a href="#about"><span lang="ko">회사 소개</span><small lang="en">About</small></a>
+      <a href="#history"><span lang="ko">연혁</span><small lang="en">History</small></a>
+      <a href="#contact"><span lang="ko">오시는 길</span><small lang="en">Contact</small></a>
     </nav>
-    <a class="btn btn-primary" href="#contact"><span>제품 문의</span><small lang="en">Inquiry</small></a>
+    <div class="lang-switch" role="group" aria-label="언어 선택 / Language" id="lang-switch">
+      <button type="button" data-set-lang="both" aria-pressed="true">KO+EN</button>
+      <button type="button" data-set-lang="ko" aria-pressed="false" lang="ko" class="keep">한국어</button>
+      <button type="button" data-set-lang="en" aria-pressed="false" lang="en" class="keep">EN</button>
+    </div>
+    <a class="btn btn-primary" href="#contact"><span lang="ko">제품 문의</span><small lang="en">Inquiry</small></a>
   </div>
 </header>
 
@@ -449,25 +487,23 @@ footer address { font-style: normal; display: grid; gap: 2px; text-align: right;
     <canvas class="silver" id="silver" aria-hidden="true"></canvas>
     <div class="wrap">
       <div class="hero-copy">
-        <div class="hero-title">
-          <h1>
-            <span class="line light metal">척추 내시경 수술을 위한</span>
-            <span class="line metal">정밀한 기구 솔루션</span>
-          </h1>
-          <p class="hero-en" lang="en">Precision instruments for endoscopic spine surgery</p>
-        </div>
+        <h1>
+          <span class="line light metal" lang="ko">척추 내시경 수술을 위한</span>
+          <span class="line metal" lang="ko">정밀한 기구 솔루션</span>
+          <span class="line hero-en" lang="en"><span class="en-a">Precision instruments</span> <span class="en-b">for endoscopic spine surgery</span></span>
+        </h1>
         <div class="hero-lead">
-          <p>엠디앤컴퍼니는 양방향·단방향 척추 내시경의 <span class="nw">감압술과 유합술에</span> 쓰는 <span class="nw">수술 기구를</span> 공급합니다. <span class="todo">회사 소개 한 문장</span></p>
+          <p lang="ko">엠디앤컴퍼니는 양방향·단방향 척추 내시경의 <span class="nw">감압술과 유합술에</span> 쓰는 <span class="nw">수술 기구를</span> 공급합니다. <span class="todo">회사 소개 한 문장</span></p>
           <p class="en-p" lang="en">MD&amp;Company supplies surgical instruments for Dual Portal and One Portal endoscopic spine decompression and fusion.</p>
         </div>
         <div class="hero-actions">
-          <a class="btn btn-primary" href="#contact"><span>카탈로그 요청하기</span><small lang="en">Request a catalog</small></a>
-          <a class="btn btn-steel" href="#procedure"><span>eX TLIF 세트 보기</span><small lang="en">View the eX TLIF set</small></a>
+          <a class="btn btn-primary" href="#contact"><span lang="ko">카탈로그 요청하기</span><small lang="en">Request a catalog</small></a>
+          <a class="btn btn-steel" href="#procedure"><span lang="ko">eX TLIF 세트 보기</span><small lang="en">View the eX TLIF set</small></a>
         </div>
         <div class="hero-meta" aria-label="지원하는 수술 접근법 / Supported approaches">
-          <span><b>Dual Portal</b> 양방향 (UBE)</span>
-          <span><b>One Portal</b> 단방향</span>
-          <span><b>감압술부터 유합술까지</b> <span lang="en">Decompression to fusion</span></span>
+          <span><b>Dual Portal</b> <span lang="ko">양방향</span> (UBE)</span>
+          <span><b>One Portal</b> <span lang="ko">단방향</span></span>
+          <span><b lang="ko">감압술부터 유합술까지</b> <span lang="en">Decompression to fusion</span></span>
         </div>
       </div>
       <figure class="hero-object" id="hero-object" aria-roledescription="carousel" aria-label="대표 기구 / Featured instruments">
@@ -494,24 +530,23 @@ footer address { font-style: normal; display: grid; gap: 2px; text-align: right;
   <section class="section" id="products">
     <div class="wrap">
       <div class="section-head">
-        <span class="kicker">제품 라인 <span lang="en">Product lines</span></span>
-        <h2><span class="nw">접근법과 술식에 맞춘</span> <span class="nw">세 가지 기구 라인</span></h2>
-        <p class="h-en" lang="en">Three instrument lines, matched to approach and procedure</p>
-        <p>수술 방식을 고르면 <span class="nw">해당 기구 세트로</span> 이동합니다.<span class="en-p" lang="en">Choose an approach and a procedure to go to its instrument set.</span></p>
+        <span class="kicker"><span lang="ko">제품 라인</span> <span lang="en">Product lines</span></span>
+        <h2><span lang="ko"><span class="nw">접근법과 술식에 맞춘</span> <span class="nw">세 가지 기구 라인</span></span><span class="h-en" lang="en">Three instrument lines, matched to approach and procedure</span></h2>
+        <p><span lang="ko">수술 방식을 고르면 <span class="nw">해당 기구 세트로</span> 이동합니다.</span><span class="en-p" lang="en">Choose an approach and a procedure to go to its instrument set.</span></p>
       </div>
       <div class="matrix-scroll">
         <table class="matrix">
-          <thead><tr><th scope="col">접근법 <small lang="en">Approach</small></th><th scope="col">감압술 <small lang="en">Decompression</small></th><th scope="col">유합술 <small lang="en">Fusion</small></th></tr></thead>
+          <thead><tr><th scope="col"><span lang="ko">접근법</span> <small lang="en">Approach</small></th><th scope="col"><span lang="ko">감압술</span> <small lang="en">Decompression</small></th><th scope="col"><span lang="ko">유합술</span> <small lang="en">Fusion</small></th></tr></thead>
           <tbody>
             <tr>
-              <th scope="row">양방향 <small>Dual Portal (UBE)</small></th>
-              <td><a href="#line-dual-decomp">감압술 기구 <em lang="en">Decompression instruments</em><span>Scope, Kerrison Punch +3</span></a></td>
-              <td><a href="#line-dual-fusion">유합술 기구 <em lang="en">Fusion instruments</em><span>eX Cage Guide, Harrison Glider +3</span></a></td>
+              <th scope="row"><span lang="ko">양방향</span> <small class="keep">Dual Portal (UBE)</small></th>
+              <td><a href="#line-dual-decomp"><span lang="ko">감압술 기구</span> <em lang="en">Decompression instruments</em><span class="list">Scope / Sheath, Kerrison Punch +21</span></a></td>
+              <td><a href="#line-dual-fusion"><span lang="ko">유합술 기구</span> <em lang="en">Fusion instruments</em><span class="list">eX TLIF Cage Guide, Harrison Glider +12</span></a></td>
             </tr>
             <tr>
-              <th scope="row">단방향 <small>One Portal</small></th>
-              <td><span class="none">해당 라인 없음 <em lang="en">Not offered</em></span></td>
-              <td><a href="#line-one-fusion">유합술 기구 <em lang="en">Fusion instruments</em><span>Uniportal Fusion Set, Harrison Glider +3</span></a></td>
+              <th scope="row"><span lang="ko">단방향</span> <small class="keep">One Portal</small></th>
+              <td><span class="none"><span lang="ko">해당 라인 없음</span> <em lang="en">Not offered</em></span></td>
+              <td><a href="#line-one-fusion"><span lang="ko">유합술 기구</span> <em lang="en">Fusion instruments</em><span class="list">Uniportal Fusion Set, Harrison Glider +12</span></a></td>
             </tr>
           </tbody>
         </table>
@@ -519,51 +554,51 @@ footer address { font-style: normal; display: grid; gap: 2px; text-align: right;
 
       <div class="lines">
         <article class="line" id="line-dual-decomp">
-          <div class="line-photo"><img class="zoomable" data-zoom="photo" data-name="양방향 척추 내시경 감압술 기구 / Dual Portal decompression instruments" src="img/dual-decompression.jpg" alt="Dual Portal 감압술용 스코프와 시스 세트" width="640" height="796"></div>
+          <div class="line-photo plate on-white"><img class="zoomable" data-zoom="white" data-name="Dual Portal Scope / Sheath" data-code="Catalog p.2" src="img/catalog/dd-scope-sheath.jpg" alt="Dual Portal 스코프와 시스 세트" width="1600" height="1067"></div>
           <div class="line-body">
-            <div class="tags"><span class="tag">Dual Portal</span><span class="tag">감압술 <i lang="en">Decompression</i></span></div>
-            <h3>양방향 척추 내시경 감압술 기구</h3>
-            <p class="en" lang="en">Dual Portal Endoscopic Spine Decompression Surgery Instruments</p>
+            <div class="tags"><span class="tag">Dual Portal</span><span class="tag"><span lang="ko">감압술</span> <i lang="en">Decompression</i></span></div>
+            <h3><span lang="ko">양방향 척추 내시경 감압술 기구</span><span class="h3-en" lang="en">Dual Portal Endoscopic Spine Decompression Surgery Instruments</span></h3>
             <ul class="instruments">
-              <li><span>Scope / Sheath</span><span>시야 확보<small lang="en">Visualization</small></span></li>
-              <li><span>Rotatory Kerrison Punch</span><span>골 절제<small lang="en">Bone resection</small></span></li>
-              <li><span>Pituitary Forceps</span><span>조직 제거<small lang="en">Tissue removal</small></span></li>
-              <li><span>Serial Dilator</span><span>단계적 확장<small lang="en">Sequential dilation</small></span></li>
-              <li><span>Working Cannula</span><span>작업 통로<small lang="en">Working channel</small></span></li>
+              <li><span>Scope / Sheath</span><span><span lang="ko">시야 확보</span><small lang="en">Visualization</small></span></li>
+              <li><span>Rotatory Kerrison Punch</span><span><span lang="ko">골 절제</span><small lang="en">Bone resection</small></span></li>
+              <li><span>Pituitary Forceps / Box Cutter</span><span><span lang="ko">조직 제거</span><small lang="en">Tissue removal</small></span></li>
+              <li><span>Serial Dilator</span><span><span lang="ko">단계적 확장</span><small lang="en">Sequential dilation</small></span></li>
+              <li><span>Working Cannula</span><span><span lang="ko">작업 통로</span><small lang="en">Working channel</small></span></li>
+              <li><span>Endo Arm, Drape, Dual Portal Tray</span><span><span lang="ko">보조 장비</span><small lang="en">Support equipment</small></span></li>
             </ul>
-            <a class="text-link" href="#contact" data-product="dual-decomp">이 라인 카탈로그 요청 <span lang="en">Request this catalog</span></a>
+            <span class="line-links"><a class="text-link" href="#catalog" data-open-line="dd"><span lang="ko">기구 23종 모두 보기</span> <span lang="en">See all 23</span></a><a class="text-link" href="#contact" data-product="dual-decomp"><span lang="ko">카탈로그 요청</span> <span lang="en">Request the catalog</span></a></span>
           </div>
         </article>
         <article class="line" id="line-dual-fusion">
           <div class="line-photo plate on-white"><img class="zoomable" data-zoom="white" data-name="eX Cage Guide &amp; Cage Dilator" data-code="eX Ca 20-01, eX Di 20-02" src="img/products/cage-guide-dilator.jpg" alt="eX Cage Guide와 eX Cage Dilator" width="2000" height="1333"></div>
           <div class="line-body">
-            <div class="tags"><span class="tag">Dual Portal (UBE)</span><span class="tag">유합술 <i lang="en">Fusion</i></span></div>
-            <h3>양방향 척추 내시경 유합술 기구</h3>
-            <p class="en" lang="en">Dual Portal Endoscopic Spine Fusion Surgery Instruments</p>
+            <div class="tags"><span class="tag">Dual Portal (UBE)</span><span class="tag"><span lang="ko">유합술</span> <i lang="en">Fusion</i></span></div>
+            <h3><span lang="ko">양방향 척추 내시경 유합술 기구</span><span class="h3-en" lang="en">Dual Portal Endoscopic Spine Fusion Surgery Instruments</span></h3>
             <ul class="instruments">
-              <li><span>eX TLIF Cage Guide</span><span>케이지 삽입 유도<small lang="en">Cage insertion guide</small></span></li>
-              <li><span>Harrison Glider &amp; Dilator</span><span>대표 제품<small lang="en">Featured</small></span></li>
-              <li><span>Osteotome</span><span>골 절삭<small lang="en">Osteotomy</small></span></li>
-              <li><span>Cage Impactor</span><span>케이지 삽입<small lang="en">Cage insertion</small></span></li>
-              <li><span>Dura Suture Pusher</span><span>경막 봉합<small lang="en">Dural suture</small></span></li>
+              <li><span>eX TLIF Cage Guide</span><span><span lang="ko">케이지 삽입 유도</span><small lang="en">Cage insertion guide</small></span></li>
+              <li><span>Harrison Glider &amp; Dilator</span><span><span lang="ko">대표 제품</span><small lang="en">Featured</small></span></li>
+              <li><span>Osteotome (Chisel I, P-Chisel II)</span><span><span lang="ko">골 절삭</span><small lang="en">Osteotomy</small></span></li>
+              <li><span>Prep Elevator, Dissector, Reamer</span><span><span lang="ko">종판 처리</span><small lang="en">Endplate preparation</small></span></li>
+              <li><span>Cage Impactor</span><span><span lang="ko">케이지 삽입</span><small lang="en">Cage insertion</small></span></li>
+              <li><span>Bone Cutter / Disc Remover</span><span><span lang="ko">디스크 제거</span><small lang="en">Disc removal</small></span></li>
             </ul>
-            <a class="text-link" href="#procedure">eX TLIF 세트 자세히 보기 <span lang="en">See the eX TLIF set</span></a>
+            <span class="line-links"><a class="text-link" href="#catalog" data-open-line="uf"><span lang="ko">기구 14종 모두 보기</span> <span lang="en">See all 14</span></a><a class="text-link" href="#procedure"><span lang="ko">eX TLIF 세트 보기</span> <span lang="en">See the eX TLIF set</span></a></span>
           </div>
         </article>
         <article class="line" id="line-one-fusion">
-          <div class="line-photo"><img class="zoomable" data-zoom="photo" data-name="Uniportal Fusion Set" src="img/uniportal-tray.jpg" alt="Uniportal Fusion 기구 세트 트레이" width="900" height="673"></div>
+          <div class="line-photo plate on-white"><img class="zoomable" data-zoom="white" data-name="Harrison Glider &amp; Dilator" data-code="Catalog p.4" src="img/catalog/of-harrison-set.jpg" alt="One Portal용 Harrison Glider와 Dilator 세트" width="1600" height="1067"></div>
           <div class="line-body">
-            <div class="tags"><span class="tag">One Portal</span><span class="tag">유합술 <i lang="en">Fusion</i></span></div>
-            <h3>단방향 척추 내시경 유합술 기구</h3>
-            <p class="en" lang="en">One Portal Fusion Instruments</p>
+            <div class="tags"><span class="tag">One Portal</span><span class="tag"><span lang="ko">유합술</span> <i lang="en">Fusion</i></span></div>
+            <h3><span lang="ko">단방향 척추 내시경 유합술 기구</span><span class="h3-en" lang="en">One Portal Fusion Instruments</span></h3>
             <ul class="instruments">
-              <li><span>Uniportal Fusion Set</span><span>트레이 세트<small lang="en">Tray set</small></span></li>
-              <li><span>Harrison Glider &amp; Dilator</span><span>대표 제품<small lang="en">Featured</small></span></li>
-              <li><span>Endo Rotatory K-Punch</span><span>골 절제<small lang="en">Bone resection</small></span></li>
-              <li><span>Endo Chisel</span><span>골 절삭<small lang="en">Osteotomy</small></span></li>
-              <li><span>Prep Reamer</span><span>종판 처리<small lang="en">Endplate preparation</small></span></li>
+              <li><span>Uniportal Fusion Set</span><span><span lang="ko">트레이 세트</span><small lang="en">Tray set</small></span></li>
+              <li><span>Harrison Glider &amp; Dilator</span><span><span lang="ko">대표 제품</span><small lang="en">Featured</small></span></li>
+              <li><span>Endo Rotatory K-Punch</span><span><span lang="ko">골 절제</span><small lang="en">Bone resection</small></span></li>
+              <li><span>Endo Chisel and Inner Sleeve</span><span><span lang="ko">골 절삭</span><small lang="en">Osteotomy</small></span></li>
+              <li><span>Prep Reamer</span><span><span lang="ko">종판 처리</span><small lang="en">Endplate preparation</small></span></li>
+              <li><span>Endo Cutting Forcep</span><span><span lang="ko">조직 절제</span><small lang="en">Tissue cutting</small></span></li>
             </ul>
-            <a class="text-link" href="#contact" data-product="one-fusion">이 라인 카탈로그 요청 <span lang="en">Request this catalog</span></a>
+            <span class="line-links"><a class="text-link" href="#catalog" data-open-line="of"><span lang="ko">기구 14종 모두 보기</span> <span lang="en">See all 14</span></a><a class="text-link" href="#contact" data-product="one-fusion"><span lang="ko">카탈로그 요청</span> <span lang="en">Request the catalog</span></a></span>
           </div>
         </article>
       </div>
@@ -573,18 +608,17 @@ footer address { font-style: normal; display: grid; gap: 2px; text-align: right;
   <section class="section procedure" id="procedure">
     <div class="wrap">
       <div class="section-head">
-        <span class="kicker">eX TLIF 기구 세트 <span lang="en">eX TLIF instrument set</span></span>
-        <h2><span class="nw">네 단계,</span> <span class="nw">한 세트로 끝내는</span> <span class="nw">양방향 유합술</span></h2>
-        <p class="h-en" lang="en">Dual Portal fusion in four steps, with one set</p>
-        <p><span class="nw">종판 처리부터 골이식까지,</span> <span class="nw">단계마다 쓰는 기구가</span> 정해져 있습니다.<span class="en-p" lang="en">From endplate preparation to bone grafting, each step has its own instruments.</span></p>
+        <span class="kicker"><span lang="ko">eX TLIF 기구 세트</span> <span lang="en">eX TLIF instrument set</span></span>
+        <h2><span lang="ko"><span class="nw">네 단계,</span> <span class="nw">한 세트로 끝내는</span> <span class="nw">양방향 유합술</span></span><span class="h-en" lang="en">Dual Portal fusion in four steps, with one set</span></h2>
+        <p><span lang="ko"><span class="nw">종판 처리부터 골이식까지,</span> <span class="nw">단계마다 쓰는 기구가</span> 정해져 있습니다.</span><span class="en-p" lang="en">From endplate preparation to bone grafting, each step has its own instruments.</span></p>
       </div>
       <div class="proc" id="proc">
         <div class="proc-list">
           <article class="proc-step" data-img="0">
             <div class="proc-text">
               <span class="proc-num">01 / 04</span>
-              <h3>종판 처리 <span class="h3-en" lang="en">Endplate preparation</span></h3>
-              <p>LT Shaver로 추간판 공간과 종판을 정리합니다. 팁의 깊이 눈금(20, 25, 30, 35)으로 진입 깊이를 확인합니다.</p>
+              <h3><span lang="ko">종판 처리</span><span class="h3-en" lang="en">Endplate preparation</span></h3>
+              <p lang="ko">LT Shaver로 추간판 공간과 종판을 정리합니다. 팁의 깊이 눈금(20, 25, 30, 35)으로 진입 깊이를 확인합니다.</p>
               <p class="en-p" lang="en">The LT Shaver clears the disc space and prepares the endplates. Depth marks on the tip (20, 25, 30, 35) show how far it has gone in.</p>
               <div class="proc-tools"><span>LT Shaver 9×11</span><span>T-handle Shaver</span></div>
             </div>
@@ -593,8 +627,8 @@ footer address { font-style: normal; display: grid; gap: 2px; text-align: right;
           <article class="proc-step" data-img="1">
             <div class="proc-text">
               <span class="proc-num">02 / 04</span>
-              <h3>트라이얼 <span class="h3-en" lang="en">Trialing</span></h3>
-              <p>Trial로 들어갈 케이지의 크기를 맞춰 봅니다. Trial Holder로 넣고 Trial Remover로 빼냅니다.</p>
+              <h3><span lang="ko">트라이얼</span><span class="h3-en" lang="en">Trialing</span></h3>
+              <p lang="ko">Trial로 들어갈 케이지의 크기를 맞춰 봅니다. Trial Holder로 넣고 Trial Remover로 빼냅니다.</p>
               <p class="en-p" lang="en">Trials size the cage before it goes in. The Trial Holder places each trial and the Trial Remover takes it out.</p>
               <div class="proc-tools"><span>eX Trial 45-09</span><span>Trial Holder 2070-2010</span><span>Trial Remover 2070-2011</span></div>
             </div>
@@ -603,8 +637,8 @@ footer address { font-style: normal; display: grid; gap: 2px; text-align: right;
           <article class="proc-step" data-img="2">
             <div class="proc-text">
               <span class="proc-num">03 / 04</span>
-              <h3>케이지 삽입 <span class="h3-en" lang="en">Cage insertion</span></h3>
-              <p>eX Cage Guide가 경로를 잡아 주면 Cage Impactor로 케이지를 밀어 넣습니다. Cage Wing Guard는 삽입 경로의 옆을 막아 줍니다.</p>
+              <h3><span lang="ko">케이지 삽입</span><span class="h3-en" lang="en">Cage insertion</span></h3>
+              <p lang="ko">eX Cage Guide가 경로를 잡아 주면 Cage Impactor로 케이지를 밀어 넣습니다. Cage Wing Guard는 삽입 경로의 옆을 막아 줍니다.</p>
               <p class="en-p" lang="en">The eX Cage Guide sets the path and the Cage Impactor drives the cage in. The Cage Wing Guard shields the side of the path.</p>
               <div class="proc-tools"><span>eX Cage Guide</span><span>Cage Impactor #11</span><span>Cage Wing Guard</span><span>Interbody Cage</span></div>
             </div>
@@ -613,8 +647,8 @@ footer address { font-style: normal; display: grid; gap: 2px; text-align: right;
           <article class="proc-step" data-img="3">
             <div class="proc-text">
               <span class="proc-num">04 / 04</span>
-              <h3>골이식 <span class="h3-en" lang="en">Bone grafting</span></h3>
-              <p>Bone Packing Block에서 케이지에 이식골을 채우고 Bone Impactor로 다져 넣습니다.</p>
+              <h3><span lang="ko">골이식</span><span class="h3-en" lang="en">Bone grafting</span></h3>
+              <p lang="ko">Bone Packing Block에서 케이지에 이식골을 채우고 Bone Impactor로 다져 넣습니다.</p>
               <p class="en-p" lang="en">The cage is packed with graft in the Bone Packing Block, then compacted with the Bone Impactor.</p>
               <div class="proc-tools"><span>Bone Packing Block eXB2008</span><span>Bone Impactor 0901-3004</span></div>
             </div>
@@ -633,14 +667,14 @@ footer address { font-style: normal; display: grid; gap: 2px; text-align: right;
   <section class="section" id="catalog">
     <div class="wrap">
       <div class="section-head">
-        <span class="kicker">기구 카탈로그 <span lang="en">Instrument catalog</span></span>
-        <h2><span class="nw">eX TLIF 세트의</span> <span class="nw">기구 16종</span></h2>
-        <p class="h-en" lang="en">The 16 instruments of the eX TLIF set</p>
-        <p>단계를 고르면 <span class="nw">그 단계에 쓰는 기구만</span> 보여 줍니다. 제품 번호는 <span class="nw">기구에 새겨진 각인</span> 그대로입니다.<span class="en-p" lang="en">Pick a step to see only its instruments. Part numbers are shown exactly as laser-marked on each instrument.</span></p>
+        <span class="kicker"><span lang="ko">기구 카탈로그</span> <span lang="en">Instrument catalog</span></span>
+        <h2><span lang="ko"><span class="nw">세 개 라인,</span> <span class="nw">기구 67종</span></span><span class="h-en" lang="en">Three lines, 67 instruments</span></h2>
+        <p><span lang="ko">라인을 고르면 <span class="nw">그 라인의 기구만</span> 보여 줍니다. 사진을 누르면 크게 볼 수 있습니다.</span><span class="en-p" lang="en">Choose a line to see its instruments. Click any photo to see it large.</span></p>
       </div>
+      <div class="line-tabs" role="tablist" aria-label="제품 라인 / Product line" id="line-tabs"></div>
       <div class="steps" role="group" aria-label="수술 단계로 거르기 / Filter by step" id="steps"></div>
       <div class="grid" id="grid"></div>
-      <p class="catalog-note">노란 표시가 붙은 기구는 사진에 각인이 보이지 않아 이름을 추정했습니다.</p>
+      <p class="catalog-note" lang="ko">카탈로그 PDF의 기구 이름과 쪽 번호를 그대로 옮겼습니다. eX TLIF 세트의 노란 표시는 각인이 보이지 않아 이름을 추정한 기구입니다.</p>
     </div>
   </section>
 
@@ -648,10 +682,10 @@ footer address { font-style: normal; display: grid; gap: 2px; text-align: right;
     <div class="wrap">
       <div class="featured-photo"><img class="zoomable" data-zoom="photo" data-name="Harrison Glider &amp; Dilator" src="img/harrison.jpg" alt="크기별로 정렬된 Harrison Glider와 Dilator 세트" width="817" height="723"></div>
       <div class="featured-body">
-        <span class="kicker">대표 제품 <span lang="en">Featured product</span></span>
+        <span class="kicker"><span lang="ko">대표 제품</span> <span lang="en">Featured product</span></span>
         <h2 id="featured-title">Harrison Glider &amp; Dilator</h2>
         <div>
-          <p><span class="nw">양방향과 단방향 유합술</span> <span class="nw">라인에 모두 들어가는</span> 기구입니다. <span class="todo">대표 제품 소개와 장점</span></p>
+          <p lang="ko"><span class="nw">양방향과 단방향 유합술</span> <span class="nw">라인에 모두 들어가는</span> 기구입니다. <span class="todo">대표 제품 소개와 장점</span></p>
           <p class="en-p" lang="en">Part of both the Dual Portal and the One Portal fusion lines.</p>
         </div>
         <ul class="features">
@@ -659,7 +693,7 @@ footer address { font-style: normal; display: grid; gap: 2px; text-align: right;
           <li><b><span class="todo">특징 2</span></b><span class="todo">한 줄 설명</span></li>
           <li><b><span class="todo">특징 3</span></b><span class="todo">한 줄 설명</span></li>
         </ul>
-        <a class="btn btn-primary" href="#contact" data-product="dual-fusion" style="justify-self:start"><span>데모 요청하기</span><small lang="en">Request a demo</small></a>
+        <a class="btn btn-primary" href="#contact" data-product="dual-fusion" style="justify-self:start"><span lang="ko">데모 요청하기</span><small lang="en">Request a demo</small></a>
       </div>
     </div>
   </section>
@@ -667,27 +701,26 @@ footer address { font-style: normal; display: grid; gap: 2px; text-align: right;
   <section class="section" id="about">
     <div class="wrap">
       <dl class="figures">
-        <div><dt>공급 병원 <small lang="en">Hospitals supplied</small></dt><dd><span class="todo">00</span></dd></div>
-        <div><dt>기구 품목 <small lang="en">Instrument items</small></dt><dd><span class="todo">00</span></dd></div>
+        <div><dt><span lang="ko">공급 병원</span> <small lang="en">Hospitals supplied</small></dt><dd><span class="todo">00</span></dd></div>
+        <div><dt><span lang="ko">기구 품목</span> <small lang="en">Instrument items</small></dt><dd><span class="todo">00</span></dd></div>
         <div><dt><span class="todo">지표</span></dt><dd><span class="todo">00</span></dd></div>
         <div><dt><span class="todo">지표</span></dt><dd><span class="todo">00</span></dd></div>
       </dl>
       <div class="about-grid">
         <div class="section-head" style="margin-bottom:0">
-          <span class="kicker">회사 소개 <span lang="en">About us</span></span>
-          <h2><span class="nw">수술실에서</span> <span class="nw">손에 잡히는 기구를</span> <span class="nw">만듭니다</span></h2>
-          <p class="h-en" lang="en">Instruments made for the surgeon’s hand</p>
+          <span class="kicker"><span lang="ko">회사 소개</span> <span lang="en">About us</span></span>
+          <h2><span lang="ko"><span class="nw">수술실에서</span> <span class="nw">손에 잡히는 기구를</span> <span class="nw">만듭니다</span></span><span class="h-en" lang="en">Instruments made for the surgeon’s hand</span></h2>
           <p class="about-intro"><span class="todo">설립 배경과 회사가 걸어온 길을 3~4문장으로</span></p>
         </div>
         <div class="pillars">
-          <div class="pillar"><h3>미션 <small lang="en">Mission</small></h3><div><strong><span class="todo">회사가 존재하는 이유</span></strong><p><span class="todo">미션 설명</span></p></div></div>
-          <div class="pillar"><h3>비전 <small lang="en">Vision</small></h3><div><strong><span class="todo">회사가 그리는 미래</span></strong><p><span class="todo">비전 설명</span></p></div></div>
-          <div class="pillar"><h3>핵심 가치 <small lang="en">Core values</small></h3><div><strong><span class="todo">가치 1, 가치 2, 가치 3</span></strong><p><span class="todo">일하는 방식 설명</span></p></div></div>
+          <div class="pillar"><h3><span lang="ko">미션</span> <small lang="en">Mission</small></h3><div><strong><span class="todo">회사가 존재하는 이유</span></strong><p><span class="todo">미션 설명</span></p></div></div>
+          <div class="pillar"><h3><span lang="ko">비전</span> <small lang="en">Vision</small></h3><div><strong><span class="todo">회사가 그리는 미래</span></strong><p><span class="todo">비전 설명</span></p></div></div>
+          <div class="pillar"><h3><span lang="ko">핵심 가치</span> <small lang="en">Core values</small></h3><div><strong><span class="todo">가치 1, 가치 2, 가치 3</span></strong><p><span class="todo">일하는 방식 설명</span></p></div></div>
         </div>
       </div>
       <div class="leaders">
-        <div class="leader plate"><span class="role">대표 <span lang="en">President</span></span><span class="name">전지운</span><span class="en">WILLIAM CHUN JIWOON</span></div>
-        <div class="leader plate"><span class="role">대표이사 <span lang="en">CEO</span></span><span class="name">박진희</span><span class="en">JINHEE PARK</span></div>
+        <div class="leader plate"><span class="role"><span lang="ko">대표</span> <span lang="en">President</span></span><span class="name">전지운</span><span class="en">WILLIAM CHUN JIWOON</span></div>
+        <div class="leader plate"><span class="role"><span lang="ko">대표이사</span> <span lang="en">CEO</span></span><span class="name">박진희</span><span class="en">JINHEE PARK</span></div>
         <blockquote class="greeting"><p><span class="todo">의료진과 파트너에게 전하는 대표 인사말</span></p></blockquote>
       </div>
     </div>
@@ -697,7 +730,7 @@ footer address { font-style: normal; display: grid; gap: 2px; text-align: right;
     <div class="wrap">
       <div class="brand-mark"><img src="img/smedion.png" alt="S-MEDiOn 로고" width="480" height="327"></div>
       <div class="brand-body">
-        <span class="kicker">브랜드 <span lang="en">Brand</span></span>
+        <span class="kicker"><span lang="ko">브랜드</span> <span lang="en">Brand</span></span>
         <h2 id="brand-title">S-MEDiOn</h2>
         <p><span class="todo">S-MEDiOn 브랜드 소개, 엠디앤컴퍼니와의 관계, 이름에 담긴 의미</span></p>
       </div>
@@ -707,9 +740,8 @@ footer address { font-style: normal; display: grid; gap: 2px; text-align: right;
   <section class="section" id="history">
     <div class="wrap">
       <div class="section-head">
-        <span class="kicker">연혁 <span lang="en">History</span></span>
-        <h2>엠디앤컴퍼니가 걸어온 길</h2>
-        <p class="h-en" lang="en">Our path so far</p>
+        <span class="kicker"><span lang="ko">연혁</span> <span lang="en">History</span></span>
+        <h2><span lang="ko">엠디앤컴퍼니가 걸어온 길</span><span class="h-en" lang="en">Our path so far</span></h2>
       </div>
       <ol class="timeline">
         <li><span class="year"><span class="todo">연도</span></span><span><span class="todo">회사 설립</span></span></li>
@@ -718,10 +750,10 @@ footer address { font-style: normal; display: grid; gap: 2px; text-align: right;
         <li><span class="year"><span class="todo">연도</span></span><span><span class="todo">주요 사건</span></span></li>
       </ol>
       <div class="partners">
-        <h3>함께하는 병원과 파트너 <small lang="en">Hospitals and partners</small></h3>
+        <h3><span lang="ko">함께하는 병원과 파트너</span> <small lang="en">Hospitals and partners</small></h3>
         <div class="logo-row">
-          <div class="logo-slot">로고</div><div class="logo-slot">로고</div><div class="logo-slot">로고</div>
-          <div class="logo-slot">로고</div><div class="logo-slot">로고</div><div class="logo-slot">로고</div>
+          <div class="logo-slot">Logo</div><div class="logo-slot">Logo</div><div class="logo-slot">Logo</div>
+          <div class="logo-slot">Logo</div><div class="logo-slot">Logo</div><div class="logo-slot">Logo</div>
         </div>
       </div>
     </div>
@@ -731,38 +763,37 @@ footer address { font-style: normal; display: grid; gap: 2px; text-align: right;
     <div class="wrap">
       <div class="contact-info">
         <div class="section-head" style="margin-bottom:0">
-          <span class="kicker">제품 문의 <span lang="en">Inquiry</span></span>
-          <h2><span class="nw">카탈로그, 데모, 견적을</span> <span class="nw">요청하세요</span></h2>
-          <p class="h-en" lang="en">Request a catalog, a demo or a quote</p>
+          <span class="kicker"><span lang="ko">제품 문의</span> <span lang="en">Inquiry</span></span>
+          <h2><span lang="ko"><span class="nw">카탈로그, 데모, 견적을</span> <span class="nw">요청하세요</span></span><span class="h-en" lang="en">Request a catalog, a demo or a quote</span></h2>
           <p><span class="todo">회신 안내 문구 (예: 영업일 기준 1일 이내 연락)</span></p>
         </div>
         <dl class="facts">
-          <div><dt>주소 <small lang="en">Address</small></dt><dd>서울특별시 종로구 삼봉로 81, 두산위브파빌리온 1103호 (수송동)
+          <div><dt><span lang="ko">주소</span> <small lang="en">Address</small></dt><dd><span lang="ko">서울특별시 종로구 삼봉로 81, 두산위브파빌리온 1103호 (수송동)</span>
             <span class="en-p" lang="en">#1103 Doosan We’ve Pavilion, 81 Sambong-ro, Jongno-gu, Seoul, Republic of Korea</span>
-            <span class="maps"><a href="https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EC%A2%85%EB%A1%9C%EA%B5%AC%20%EC%82%BC%EB%B4%89%EB%A1%9C%2081" target="_blank" rel="noopener">네이버 지도</a><a href="https://map.kakao.com/?q=%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EC%A2%85%EB%A1%9C%EA%B5%AC%20%EC%82%BC%EB%B4%89%EB%A1%9C%2081" target="_blank" rel="noopener">카카오맵</a><a href="https://www.google.com/maps/search/?api=1&amp;query=81+Sambong-ro+Jongno-gu+Seoul" target="_blank" rel="noopener" lang="en">Google Maps</a></span></dd></div>
-          <div><dt>전화 <small lang="en">Phone</small></dt><dd><span class="todo">대표 전화번호 (해외용 +82 표기 포함)</span></dd></div>
-          <div><dt>이메일 <small lang="en">Email</small></dt><dd><span class="todo">대표 이메일</span></dd></div>
-          <div><dt>대중교통 <small lang="en">Getting here</small></dt><dd><span class="todo">가까운 지하철역과 버스 정류장</span></dd></div>
+            <span class="maps"><a class="keep" href="https://map.naver.com/p/search/%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EC%A2%85%EB%A1%9C%EA%B5%AC%20%EC%82%BC%EB%B4%89%EB%A1%9C%2081" target="_blank" rel="noopener"><span lang="ko">네이버 지도</span><span lang="en">Naver Map</span></a><a href="https://map.kakao.com/?q=%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C%20%EC%A2%85%EB%A1%9C%EA%B5%AC%20%EC%82%BC%EB%B4%89%EB%A1%9C%2081" target="_blank" rel="noopener" lang="ko">카카오맵</a><a class="keep" href="https://www.google.com/maps/search/?api=1&amp;query=81+Sambong-ro+Jongno-gu+Seoul" target="_blank" rel="noopener" lang="en">Google Maps</a></span></dd></div>
+          <div><dt><span lang="ko">전화</span> <small lang="en">Phone</small></dt><dd><span class="todo">대표 전화번호 (해외용 +82 표기 포함)</span></dd></div>
+          <div><dt><span lang="ko">이메일</span> <small lang="en">Email</small></dt><dd><span class="todo">대표 이메일</span></dd></div>
+          <div><dt><span lang="ko">대중교통</span> <small lang="en">Getting here</small></dt><dd><span class="todo">가까운 지하철역과 버스 정류장</span></dd></div>
         </dl>
       </div>
       <form class="inquiry" id="inquiry" novalidate>
-        <div class="field"><label for="f-name">이름 <small lang="en">Name</small></label><input id="f-name" name="name" autocomplete="name" required></div>
-        <div class="field"><label for="f-org">병원·소속 <small lang="en">Hospital or company</small></label><input id="f-org" name="org" autocomplete="organization" required></div>
-        <div class="field"><label for="f-email">이메일 <small lang="en">Email</small></label><input id="f-email" name="email" type="email" autocomplete="email" required></div>
-        <div class="field"><label for="f-tel">연락처 <small lang="en">Phone</small></label><input id="f-tel" name="tel" type="tel" autocomplete="tel"></div>
-        <div class="field full"><label for="f-country">국가 <small lang="en">Country</small></label><input id="f-country" name="country" autocomplete="country-name" placeholder="예: 대한민국 / e.g. Germany"></div>
-        <div class="field full"><label for="f-product">관심 제품 <small lang="en">Product of interest</small></label>
+        <div class="field"><label for="f-name"><span lang="ko">이름</span> <small lang="en">Name</small></label><input id="f-name" name="name" autocomplete="name" required></div>
+        <div class="field"><label for="f-org"><span lang="ko">병원·소속</span> <small lang="en">Hospital or company</small></label><input id="f-org" name="org" autocomplete="organization" required></div>
+        <div class="field"><label for="f-email"><span lang="ko">이메일</span> <small lang="en">Email</small></label><input id="f-email" name="email" type="email" autocomplete="email" required></div>
+        <div class="field"><label for="f-tel"><span lang="ko">연락처</span> <small lang="en">Phone</small></label><input id="f-tel" name="tel" type="tel" autocomplete="tel"></div>
+        <div class="field full"><label for="f-country"><span lang="ko">국가</span> <small lang="en">Country</small></label><input id="f-country" name="country" autocomplete="country-name" data-ph-ko="예: 대한민국" data-ph-en="e.g. Germany" placeholder="예: 대한민국 / e.g. Germany"></div>
+        <div class="field full"><label for="f-product"><span lang="ko">관심 제품</span> <small lang="en">Product of interest</small></label>
           <select id="f-product" name="product">
-            <option value="dual-decomp">양방향 척추 내시경 감압술 기구 / Dual Portal decompression</option>
-            <option value="dual-fusion">양방향 척추 내시경 유합술 기구 (eX TLIF) / Dual Portal fusion</option>
-            <option value="one-fusion">단방향 척추 내시경 유합술 기구 / One Portal fusion</option>
-            <option value="other">기타 / Other</option>
+            <option value="dual-decomp" data-ko="양방향 척추 내시경 감압술 기구" data-en="Dual Portal decompression">양방향 척추 내시경 감압술 기구 / Dual Portal decompression</option>
+            <option value="dual-fusion" data-ko="양방향 척추 내시경 유합술 기구 (eX TLIF)" data-en="Dual Portal fusion (eX TLIF)">양방향 척추 내시경 유합술 기구 (eX TLIF) / Dual Portal fusion</option>
+            <option value="one-fusion" data-ko="단방향 척추 내시경 유합술 기구" data-en="One Portal fusion">단방향 척추 내시경 유합술 기구 / One Portal fusion</option>
+            <option value="other" data-ko="기타" data-en="Other">기타 / Other</option>
           </select>
         </div>
-        <div class="field full"><label for="f-msg">문의 내용 <small lang="en">Message</small></label><textarea id="f-msg" name="message" placeholder="필요한 자료(카탈로그, 데모, 견적)와 일정을 적어 주세요. / Tell us what you need (catalog, demo or quote) and when."></textarea></div>
-        <label class="consent" for="f-consent"><input id="f-consent" type="checkbox" required> <span>개인정보 수집·이용에 동의합니다 (필수)<small lang="en">I agree to the collection and use of my personal information (required)</small></span></label>
+        <div class="field full"><label for="f-msg"><span lang="ko">문의 내용</span> <small lang="en">Message</small></label><textarea id="f-msg" name="message" data-ph-ko="필요한 자료(카탈로그, 데모, 견적)와 일정을 적어 주세요." data-ph-en="Tell us what you need (catalog, demo or quote) and when." placeholder="필요한 자료(카탈로그, 데모, 견적)와 일정을 적어 주세요. / Tell us what you need (catalog, demo or quote) and when."></textarea></div>
+        <label class="consent" for="f-consent"><input id="f-consent" type="checkbox" required> <span><span lang="ko">개인정보 수집·이용에 동의합니다 (필수)</span><small lang="en">I agree to the collection and use of my personal information (required)</small></span></label>
         <div class="form-foot">
-          <button class="btn btn-primary" type="submit"><span>문의 보내기</span><small lang="en">Send inquiry</small></button>
+          <button class="btn btn-primary" type="submit"><span lang="ko">문의 보내기</span><small lang="en">Send inquiry</small></button>
           <span class="form-status" id="form-status" role="status"></span>
         </div>
       </form>
@@ -778,7 +809,7 @@ footer address { font-style: normal; display: grid; gap: 2px; text-align: right;
       <span class="viewer-count" id="viewer-count"></span>
       <span class="viewer-name"><b id="viewer-name"></b><span id="viewer-code"></span></span>
       <span class="viewer-nav">
-        <span class="viewer-hint">사진을 누르면 확대돼요</span>
+        <span class="viewer-hint"><span lang="ko">사진을 누르면 확대돼요</span> <span lang="en">Click the photo to zoom</span></span>
         <button class="slide-btn" type="button" id="viewer-prev" aria-label="이전 사진"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M10 3 5 8l5 5"/></svg></button>
         <button class="slide-btn" type="button" id="viewer-next" aria-label="다음 사진"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="m6 3 5 5-5 5"/></svg></button>
       </span>
@@ -789,7 +820,7 @@ footer address { font-style: normal; display: grid; gap: 2px; text-align: right;
 <footer>
   <div class="wrap">
     <img class="footer-logo" src="img/logo-light.png" alt="MD&amp;company 엠디앤컴퍼니" width="480" height="113">
-    <address><span>서울특별시 종로구 삼봉로 81, 두산위브파빌리온 1103호</span><span lang="en">#1103 Doosan We’ve Pavilion, 81 Sambong-ro, Jongno-gu, Seoul, Korea</span></address>
+    <address><span lang="ko">서울특별시 종로구 삼봉로 81, 두산위브파빌리온 1103호</span><span lang="en">#1103 Doosan We’ve Pavilion, 81 Sambong-ro, Jongno-gu, Seoul, Korea</span></address>
   </div>
 </footer>
 
@@ -798,14 +829,51 @@ footer address { font-style: normal; display: grid; gap: 2px; text-align: right;
 <script>
   const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+  /* ---------- Language: both (default), ko or en ----------
+     The page opens in both languages; a saved choice or #ko / #en in the link overrides that. */
+  const Lang = (() => {
+    const root = document.documentElement, KEY = 'mdn-lang', MODES = ['both', 'ko', 'en'];
+    const listeners = [];
+    let mode = 'both';
+    try { const saved = localStorage.getItem(KEY); if (MODES.includes(saved)) mode = saved; } catch (e) {}
+    const hash = location.hash.slice(1);
+    if (hash === 'ko' || hash === 'en') mode = hash;
+    function apply(m, save) {
+      mode = m;
+      root.dataset.lang = m;
+      root.lang = m === 'en' ? 'en' : 'ko';
+      document.querySelectorAll('[data-set-lang]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.setLang === m)));
+      // Native controls can't hide half their text, so they get the right string instead
+      document.querySelectorAll('option[data-ko]').forEach(o => { o.textContent = pick(o.dataset.ko, o.dataset.en, ' / '); });
+      document.querySelectorAll('[data-ph-ko]').forEach(el => { el.placeholder = pick(el.dataset.phKo, el.dataset.phEn, ' / '); });
+      if (save) { try { localStorage.setItem(KEY, m); } catch (e) {} }
+      listeners.forEach(f => f(m));
+      if (window.ScrollTrigger) requestAnimationFrame(() => ScrollTrigger.refresh());
+    }
+    function pick(ko, en, sep = ' ') { return mode === 'ko' ? ko : mode === 'en' ? en : `${ko}${sep}${en}`; }
+    document.getElementById('lang-switch').addEventListener('click', e => {
+      const b = e.target.closest('[data-set-lang]');
+      if (b && b.dataset.setLang !== mode) apply(b.dataset.setLang, true);
+    });
+    apply(mode, false);
+    return { get mode() { return mode; }, on: f => listeners.push(f), pick };
+  })();
+  // An instrument's name and sub-line in the current language
+  function caption(it) {
+    const code = Lang.mode === 'ko' && it.codeKo ? it.codeKo : Lang.mode === 'en' && it.codeEn ? it.codeEn : it.code;
+    if (Lang.mode === 'en') return { name: it.en || it.name, sub: code };
+    if (Lang.mode === 'ko' || !it.en) return { name: it.name, sub: code };
+    return { name: it.name, sub: `${it.en}, ${code}` };
+  }
+
   // Codes are read from the laser marking on each instrument; guess: true means no marking was legible.
   const STEPS = ['종판 처리', '트라이얼', '케이지 삽입', '골이식', '보조 기구'];
   const STEP_EN = { '전체': 'All', '종판 처리': 'Endplate prep', '트라이얼': 'Trialing', '케이지 삽입': 'Cage insertion', '골이식': 'Bone grafting', '보조 기구': 'Accessories' };
   const ITEMS = [
     { step: '종판 처리', name: 'LT Shaver 9×11', code: 'Depth marks 20, 25, 30, 35', img: 'lt-shaver', zoom: 1.12 },
     { step: '종판 처리', name: 'LT Shaver (각도형)', en: 'LT Shaver, angled', code: 'Gold tip, angled', img: 'shaver-angled', zoom: 1.12, guess: true },
-    { step: '종판 처리', name: 'T-핸들 쉐이버 (직선형)', en: 'T-handle Shaver, straight', code: '각인 확인 필요', img: 't-handle-straight', zoom: 1.12, guess: true },
-    { step: '종판 처리', name: 'T-핸들 쉐이버 (각도형)', en: 'T-handle Shaver, angled', code: '각인 확인 필요', img: 't-handle-angled', zoom: 1.12, guess: true },
+    { step: '종판 처리', name: 'T-핸들 쉐이버 (직선형)', en: 'T-handle Shaver, straight', code: '각인 확인 필요', codeEn: 'Marking not visible', img: 't-handle-straight', zoom: 1.12, guess: true },
+    { step: '종판 처리', name: 'T-핸들 쉐이버 (각도형)', en: 'T-handle Shaver, angled', code: '각인 확인 필요', codeEn: 'Marking not visible', img: 't-handle-angled', zoom: 1.12, guess: true },
     { step: '트라이얼', name: 'eX Trial', code: 'Trial 45-09, eX 200818', img: 'trial', zoom: 1.5 },
     { step: '트라이얼', name: 'eX Trial Holder', code: '2070-2010', img: 'trial-holder', zoom: 1.1 },
     { step: '트라이얼', name: 'eX Trial Remover', code: '2070-2011', img: 'trial-remover', zoom: 1.1 },
@@ -817,7 +885,7 @@ footer address { font-style: normal; display: grid; gap: 2px; text-align: right;
     { step: '골이식', name: 'Bone Impactor', code: '0901-3004', img: 'bone-impactor', zoom: 1.25 },
     { step: '보조 기구', name: 'Hammer', code: '2001-2006', img: 'hammer', zoom: 1.3 },
     { step: '보조 기구', name: 'Slap Hammer', code: '2001-7001', img: 'slap-hammer', zoom: 1.2 },
-    { step: '보조 기구', name: '훅 프로브', en: 'Hook probe', code: '각인 확인 필요', img: 'hook', zoom: 1.1, guess: true },
+    { step: '보조 기구', name: '훅 프로브', en: 'Hook probe', code: '각인 확인 필요', codeEn: 'Marking not visible', img: 'hook', zoom: 1.1, guess: true },
   ];
   // How each instrument lies in the hero: tilt (deg) and scale, tuned so long and small pieces read at a similar size
   const POSE = {
@@ -951,11 +1019,12 @@ footer address { font-style: normal; display: grid; gap: 2px; text-align: right;
     let i = 0, busy = false, userPaused = false, holding = false, onScreen = true;
 
     function setLabel(k) {
-      const it = HERO[k];
-      label.innerHTML = `<b>${it.name}</b><span>${it.en ? it.en + ', ' : ''}${it.code}</span>`;
+      const c = caption(HERO[k]);
+      label.innerHTML = `<b>${c.name}</b><span>${c.sub}</span>`;
       count.textContent = `${pad(k + 1)} / ${pad(HERO.length)}`;
     }
     setLabel(0);
+    Lang.on(() => setLabel(i));
     if (!window.gsap) return;
 
     // GSAP owns each slide's transform so the slide (x) and the scroll drift (y) can share it
@@ -1106,7 +1175,8 @@ footer address { font-style: normal; display: grid; gap: 2px; text-align: right;
 
     return { open };
   })();
-  const entry = it => ({ src: `img/products/${it.img}.jpg`, name: it.name, code: (it.en ? it.en + ', ' : '') + it.code, white: true });
+  const srcOf = it => it.dir === 'catalog' ? `img/catalog/${it.img}.jpg` : it.dir === '' ? `img/${it.img}.jpg` : `img/products/${it.img}.jpg`;
+  const entry = it => { const c = caption(it); return { src: srcOf(it), name: c.name, code: c.sub, white: !it.photo }; };
 
   // Hero: the instrument showing now, inside the whole set
   document.getElementById('slides-zoom').addEventListener('click', e => {
@@ -1126,46 +1196,108 @@ footer address { font-style: normal; display: grid; gap: 2px; text-align: right;
     el.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openIt(); } });
   });
 
-  /* ---------- Catalog ---------- */
+  /* ---------- Catalog: four tabs, one per instrument set ----------
+     Names and page numbers follow the company's PDF catalogs. photo: true means the drape background could not be
+     removed cleanly, so the original photo is shown as a photo instead of blending into the steel plate. */
+  const C = (name, img, page, extra = {}) => ({ name, img, dir: 'catalog', code: `Catalog p.${page}`, codeKo: `카탈로그 ${page}쪽`, zoom: 1, ...extra });
+  const LINES = {
+    dd: { ko: 'Dual Portal 감압술', en: 'Dual Portal decompression', items: [
+      C('Dual Portal Scope / Sheath', 'dd-scope-sheath', 2), C('Rotatory Kerrison Punch', 'dd-rotatory-kerrison', 3),
+      C('Kerrison Punch / Foraminal K-Punch', 'dd-kerrison-foraminal', 4), C('Pituitary / Micro Pituitary', 'dd-pituitary-micro', 5),
+      C('Pituitary Forceps / Box Cutter', 'dd-pituitary-box', 6), C('Curette / Spade Knife', 'dd-curette-spade', 7),
+      C('Muscle Detacher / Hook', 'dd-muscle-detacher', 8), C('Root Retractor / Hemostatic Agent Delivery Tube', 'dd-root-retractor', 9),
+      C('Serial Dilator', 'dd-serial-dilator', 10), C('Double Ended Dissectors / Fan Dissector', 'dd-dissectors', 11),
+      C('Working Cannula', 'dd-working-cannula', 12, { photo: true }), C('Scope & Working Cannula', 'dd-scope-cannula', 14),
+      C('Scope Cannula Self-retractor', 'dd-self-retractor', 15), C('Osteotome (Chisel I)', 'dd-osteotome-chisel', 16),
+      C('Osteotome (P-Chisel)', 'dd-osteotome-pchisel', 17), C('C-chisel', 'dd-c-chisel', 18),
+      C('Bone Chip Cannula and Mallet', 'dd-mallet', 19, { photo: true }), C('Bone Wax', 'dd-bone-wax', 20),
+      C('Blade Holder', 'dd-blade-holder', 21), C('Dura Suture Pusher', 'dd-dura-suture', 22, { photo: true }),
+      C('Endo Arm', 'dd-endo-arm', 23), C('Drape', 'dd-drape', 24, { photo: true }), C('Dual Portal Tray', 'dd-tray', 25, { photo: true }),
+    ] },
+    uf: { ko: 'Dual Portal 유합술 (UBE)', en: 'Dual Portal fusion (UBE)', items: [
+      C('eX TLIF Cage Guide', 'uf-ex-tlif-cage-guide', 2, { photo: true }), C('Cage Guide', 'uf-cage-guide', 3),
+      C('Harrison Glider & Dilator', 'uf-harrison', 4), C('Curette (Square)', 'uf-curette-square', 6),
+      C('Curette (Ring)', 'uf-curette-ring', 7), C('Osteotome (Chisel I)', 'uf-osteotome-chisel', 8),
+      C('Osteotome (P-Chisel II)', 'uf-osteotome-pchisel', 9), C('Bone Chip Cannula and Mallet', 'uf-mallet', 10, { photo: true }),
+      C('Cage Impactor', 'uf-cage-impactor', 11, { photo: true }), C('Dura Suture Pusher', 'uf-dura-suture', 12, { photo: true }),
+      C('Prep Elevator', 'uf-prep-elevator', 13), C('Prep Dissector', 'uf-prep-dissector', 14, { photo: true }),
+      C('Prep Reamer', 'uf-prep-reamer', 15), C('Bone Cutter / Disc Remover', 'uf-bone-cutter', 16),
+    ] },
+    ex: { ko: 'eX TLIF 세트', en: 'eX TLIF set', items: ITEMS },
+    of: { ko: 'One Portal 유합술', en: 'One Portal fusion', items: [
+      { ...C('Uniportal Fusion Set', 'uniportal-tray', 2, { photo: true }), dir: '' },
+      C('Harrison Glider & Dilator Double', 'of-harrison-double', 3), C('Harrison Glider & Dilator', 'of-harrison-set', 4),
+      C('Harrison Glider & Dilator', 'of-harrison-cages', 5), C('Harrison Glider & Dilator Single', 'of-harrison-single', 7),
+      C('Endo Curette and Cob', 'of-curette-cob', 9), C('Endo Dissector and Hook', 'of-dissector-hook', 10),
+      C('Endo Prep. Dissector', 'of-prep-dissector', 11), C('Bone Wax and Hemostatic Agent Delivery Tube', 'of-bone-wax-tube', 12),
+      C('Endo Cutting Forcep', 'of-cutting-forcep', 13), C('Prep Reamer', 'of-prep-reamer', 14),
+      C('Endo Chisel and Inner Sleeve', 'of-chisel-sleeve', 15), C('Endo Rotatory K-Punch', 'of-rotatory-kpunch', 16, { photo: true }),
+      C('Hemostat Agent Dispenser and Dura Suture Pusher', 'of-dispenser-pusher', 17, { photo: true }),
+    ] },
+  };
+
+  const tabsEl = document.getElementById('line-tabs');
   const stepsEl = document.getElementById('steps'), gridEl = document.getElementById('grid');
   const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;');
-  let current = '전체';
+  let line = 'dd', current = '전체';
+  const visible = () => line !== 'ex' ? LINES[line].items : current === '전체' ? ITEMS : ITEMS.filter(i => i.step === current);
+
+  function renderTabs() {
+    tabsEl.innerHTML = Object.entries(LINES).map(([k, l]) =>
+      `<button type="button" class="line-tab" role="tab" aria-selected="${k === line}" data-line="${k}"><span lang="ko">${l.ko}</span><em lang="en">${l.en}</em><span class="count">${l.items.length}</span></button>`).join('');
+  }
   function renderSteps() {
+    stepsEl.hidden = line !== 'ex';
     stepsEl.innerHTML = ['전체', ...STEPS].map(s => {
       const n = s === '전체' ? ITEMS.length : ITEMS.filter(i => i.step === s).length;
-      return `<button type="button" class="step" aria-pressed="${s === current}" data-step="${s}">${s} <em lang="en">${STEP_EN[s]}</em><span class="count">${n}</span></button>`;
+      return `<button type="button" class="step" aria-pressed="${s === current}" data-step="${s}"><span lang="ko">${s}</span> <em lang="en">${STEP_EN[s]}</em><span class="count">${n}</span></button>`;
     }).join('');
   }
   function renderGrid() {
-    const list = current === '전체' ? ITEMS : ITEMS.filter(i => i.step === current);
-    gridEl.innerHTML = list.map((i, k) => `
+    gridEl.innerHTML = visible().map((i, k) => `
       <article class="item">
-        <button type="button" class="item-photo plate" data-index="${k}" aria-label="${esc(i.name)} 크게 보기"><img src="img/products/${i.img}.jpg" alt="" width="2000" height="1333" style="--zoom:${i.zoom}"></button>
+        <button type="button" class="item-photo plate${i.photo ? ' photo' : ''}" data-index="${k}" aria-label="${esc(i.en || i.name)}, ${Lang.pick('크게 보기', 'enlarge')}"><img src="${srcOf(i)}" alt="" width="1600" height="1067" loading="lazy" style="--zoom:${i.zoom}"></button>
         <div class="item-body">
-          <span class="item-name">${esc(i.name)}</span>
+          <span class="item-name"${i.en ? ' lang="ko"' : ''}>${esc(i.name)}</span>
           ${i.en ? `<span class="item-en" lang="en">${esc(i.en)}</span>` : ''}
-          <span class="item-code">${esc(i.code)}</span>
-          ${current === '전체' ? `<span class="item-group">${i.step} <span lang="en">${STEP_EN[i.step]}</span></span>` : ''}
+          <span class="item-code">${i.codeKo ? esc(Lang.mode === 'ko' ? i.codeKo : i.code)
+            : i.codeEn ? `<span lang="ko">${esc(i.code)}</span><span lang="en">${esc(i.codeEn)}</span>` : esc(i.code)}</span>
+          ${line === 'ex' && current === '전체' ? `<span class="item-group"><span lang="ko">${i.step}</span> <span lang="en">${STEP_EN[i.step]}</span></span>` : ''}
           ${i.guess ? '<span class="check">이름 확인 필요</span>' : ''}
         </div>
       </article>`).join('');
   }
+  function settle() {
+    // Cards answer the click: a short settle, then layout below has moved, so re-measure scroll triggers
+    if (window.gsap && !reduceMotion) gsap.from('#grid .item', { y: 12, opacity: 0, duration: .45, stagger: .02, ease: 'power2.out' });
+    if (window.ScrollTrigger) requestAnimationFrame(() => ScrollTrigger.refresh());
+  }
+  tabsEl.addEventListener('click', e => {
+    const b = e.target.closest('.line-tab');
+    if (!b || b.dataset.line === line) return;
+    line = b.dataset.line; current = '전체';
+    renderTabs(); renderSteps(); renderGrid();
+    tabsEl.querySelector(`[data-line="${line}"]`).focus();
+    settle();
+  });
   stepsEl.addEventListener('click', e => {
     const b = e.target.closest('.step');
     if (!b) return;
     current = b.dataset.step;
     renderSteps(); renderGrid();
     stepsEl.querySelector(`[data-step="${current}"]`).focus();
-    // Cards answer the click: a short settle, then layout below has moved, so re-measure scroll triggers
-    if (window.gsap && !reduceMotion) gsap.from('#grid .item', { y: 12, opacity: 0, duration: .45, stagger: .03, ease: 'power2.out' });
-    if (window.ScrollTrigger) requestAnimationFrame(() => ScrollTrigger.refresh());
+    settle();
   });
-  renderSteps(); renderGrid();
+  // Links like the product-line rows open the matching tab
+  document.querySelectorAll('[data-open-line]').forEach(a => a.addEventListener('click', () => {
+    line = a.dataset.openLine; current = '전체'; renderTabs(); renderSteps(); renderGrid();
+  }));
+  renderTabs(); renderSteps(); renderGrid();
+  Lang.on(renderGrid);
   gridEl.addEventListener('click', e => {
     const b = e.target.closest('button.item-photo');
     if (!b) return;
-    const list = current === '전체' ? ITEMS : ITEMS.filter(i => i.step === current);
-    Viewer.open(list.map(entry), +b.dataset.index, b);
+    Viewer.open(visible().map(entry), +b.dataset.index, b);
   });
 
   // "Request catalog" links preselect the product line in the form
@@ -1179,12 +1311,14 @@ footer address { font-style: normal; display: grid; gap: 2px; text-align: right;
     const form = e.currentTarget, status = document.getElementById('form-status');
     const missing = [...form.querySelectorAll('[required]')].find(el => el.type === 'checkbox' ? !el.checked : !el.value.trim() || !el.checkValidity());
     if (missing) {
-      const label = missing.type === 'checkbox' ? '개인정보 수집·이용 동의 (Consent)' : form.querySelector(`label[for="${missing.id}"]`).textContent.trim();
-      status.textContent = `${label}: 항목을 확인해 주세요. Please check this field.`;
+      const lab = missing.type === 'checkbox' ? null : form.querySelector(`label[for="${missing.id}"]`);
+      const ko = lab ? lab.querySelector('[lang="ko"]').textContent : '개인정보 수집·이용 동의';
+      const en = lab ? lab.querySelector('[lang="en"]').textContent : 'consent';
+      status.textContent = Lang.pick(`${ko} 항목을 확인해 주세요.`, `Please check: ${en}.`);
       missing.focus();
       return;
     }
-    status.textContent = '시안 페이지라 실제로 전송되지는 않습니다. This draft does not send messages yet.';
+    status.textContent = Lang.pick('시안 페이지라 실제로 전송되지는 않습니다.', 'This draft page does not send messages yet.');
   });
 </script>
 
